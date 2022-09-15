@@ -1,0 +1,9 @@
+# base-image festlegen
+FROM alpine:latest
+
+# Umgebungsvariable definieren
+ENV MYVAR=1
+
+# Ausführung des Containers
+ENTRYPOINT echo "Mein Container-Test '$MYVAR'"
+

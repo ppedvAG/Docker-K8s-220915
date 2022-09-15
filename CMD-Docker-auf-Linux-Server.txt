@@ -1,0 +1,47 @@
+Installation Docker auf Linux-Server
+====================================
+
+// grundlegende Pakete
+sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg lsb-release
+
+// GPG key
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+// Ubuntu Paket-Liste
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+// docker engine installieren
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+// Test auf korrekte Funktion als Root-User
+sudo docker run hello-world
+
+// als Nicht-Root-User starten
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+mkdir /home/"$USER"/.docker
+sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
+sudo chmod g+rwx "$HOME/.docker" -R
+
+// Test als Nicht-Root-User
+docker run hello-world
+
+// Start mit Boot konfigurieren
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
+
+
+Portainer.io installieren
+-------------------------
+
+// volume erzeugen
+docker volume create portainer_data
+
+// portainer laden und starten
+docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:2.14.2
+
+
