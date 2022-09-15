@@ -1,0 +1,11 @@
+apiVersion: v2
+name: webserv
+namespace: webserv-helm
+version: 0.1.0
+appVersion: "0.1.0"
+description: A Helm chart for installation of simple webserv
+home: https://mydomain.de
+maintainers:
+  - name: Matthias Boldt
+    email: Matthias.Boldt@mydomain.de
+
