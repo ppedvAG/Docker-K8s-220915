@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserv
+spec:
+  selector:
+    matchLabels:
+      app: webserv
+  replicas: 2 
+  template:
+    metadata:
+      labels:
+        app: webserv
+    spec:
+      containers:
+      - name: webserv
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webserv
+  labels:
+    run: webserv
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: webserv
+  type: LoadBalancer
+
