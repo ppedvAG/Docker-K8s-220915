@@ -1,0 +1,48 @@
+# docker compose file für die Erzeugung eines Wordpress-Servers
+# -------------------------------------------------------------
+# 
+# baut zwei Container auf für Wordpress und für MariaDB
+services:
+
+  # der Datenbank-Server
+  db:
+    image: mariadb:10.2
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=superpassword
+      - MYSQL_DATABASE=${WORDPRESS_DB}
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=wordpress
+    networks:
+      - wpnet
+    profiles:
+      - database
+      - all
+
+  # der WEB-Server
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - ${WORDPRESS_PORT}:80
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=wordpress
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB}
+    networks:
+      - wpnet
+    profiles:
+      - all
+
+# Volume für die Datenbank
+volumes:
+  db_data:
+
+# eigenes Netzwerk
+networks:
+  wpnet:
+    driver: bridge
+
